@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Individual {
+  id           String         @id
+  employee_id  String         @unique
+  branch_id    String
+  PayeeAccount PayeeAccount[]
+}
+
+model Corporation {
+  id           String         @id
+  corp_id      String         @unique
+  PayorAccount PayorAccount[]
+}
+
+model PayeeAccount {
+  id                  String     @id
+  holder              Individual @relation(fields: [holder_id], references: [id])
+  holder_id           String
+  merchant            Merchant   @relation(fields: [merchant_id], references: [id])
+  merchant_id         String
+  loan_account_number String
+  Payment             Payment[]
+}
+
+model PayorAccount {
+  id             String      @id
+  holder         Corporation @relation(fields: [holder_id], references: [id])
+  holder_id      String
+  routing_number String
+  account_number String
+  Payment        Payment[]
+}
+
+model Merchant {
+  id           String         @id
+  plaid_id     String
+  PayeeAccount PayeeAccount[]
+}
+
+model Payout {
+  id           Int       @id @default(autoincrement())
+  total_amount Int?
+  status       String
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  Payment      Payment[]
+}
+
+model Payment {
+  id         String       @id
+  payor      PayorAccount @relation(fields: [payor_id], references: [id])
+  payor_id   String
+  payee      PayeeAccount @relation(fields: [payee_id], references: [id])
+  payee_id   String
+  payout     Payout       @relation(fields: [payout_id], references: [id])
+  payout_id  Int
+  amount     Int          @default(0)
+  status     String
+  created_at DateTime     @default(now())
+  updated_at DateTime     @updatedAt
+}
