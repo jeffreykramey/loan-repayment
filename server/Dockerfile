@@ -3,5 +3,5 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-EXPOSE 3000
-CMD [ "npm", "start" ]
+EXPOSE 5000
+CMD sh -c "npx prisma migrate dev && npm start"
