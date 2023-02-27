@@ -13,6 +13,7 @@ services:
     ports:
       - "5000:5000"
     environment:
+    #api keys purposefully comitted
       METHOD_API_KEY: sk_Tf4aPU8KiBxWX8Vae8Wjwf7M
       DATABASE_URL: postgres://postgres:password@db:5432/dd?connect_timeout=300
       ENV: dev
